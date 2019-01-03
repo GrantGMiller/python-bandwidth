@@ -147,6 +147,28 @@ class Client:
         path = '/users/%s/messages' % self.user_id
         return get_lazy_enumerator(self, lambda: self._make_request('get', path, params=kwargs))
 
+    def send_group_message(self, from_, to, **kwargs):
+        '''
+        param to: list of str
+        '''
+        dataDict = {
+                "to": to,
+                "from": bandwidth_creds.MY_BANDWIDTH_PHONE,
+                "text": text,
+            }
+        dataDict.update(kwargs)
+        
+        resp = requests.post(
+            'https://api.catapult.inetwork.com/v2/users/{userId}/messages'.format(
+                userId=self.user_id),
+            headers={
+                'Content-Type': 'application/json; charset=utf-8',
+            },
+            data=json.dumps(dataDict),
+            auth=self.auth
+        )
+        return resp.json()
+    
     def send_message(self, from_, to,
                      text=None,
                      media=None,
